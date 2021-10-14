@@ -13,3 +13,5 @@ RUN mkdir /home/secdev && \
            git clone https://github.com/salmanyam/tutorial-secdev-2021.git
 
 WORKDIR /home/secdev/tutorial-secdev-2021
+
+RUN make
