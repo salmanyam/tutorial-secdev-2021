@@ -1,4 +1,68 @@
-# jitrop-native
+# SecDev Tutorial 2021
+## Tutorial: Investigating Advanced Exploits for System Security Assurance
+
+
+### Demo Setup
+1. Download our tutorial repository from GitHub
+	```$ git clone https://github.com/salmanyam/tutorial-secdev-2021.git``` or download the repository as zipped and unzip it.
+
+2. Install Docker if it is not already installed using the instructions in the following link
+	https://docs.docker.com/engine/install/ubuntu/ or run docker-install.sh script given in our repo.
+	```$ ./docker-install.sh```
+
+3. Build a docker image using the provided Docker file in the tutorial repo. This may take 2-3 minutes to complete.
+	
+  ```
+  $ cd tutorial-secdev-2021
+  $ sudo docker build -t secdevt21 .
+  ```
+4. Run the docker image with privileged mode. The priviledged mode is necessary for ```ptrace``` that is used for attaching a process in our gadget finding code. 
+	
+  ```
+  $ sudo docker run -it --privileged secdevt21
+  ```
+
+
+### Gadget Lookup
+1. Run the nginx program given in the tutorial rep. The following command will start nginx server and print a leaked address in the terminal. 
+```
+$ ./nginx/nginx -c nginx.conf -g 'daemon on;' -p nginx
+```
+
+2. Get the pid of the nginx master process
+```
+$ ps aux | grep nginx
+```
+
+3. Give the following command to get the Turing-complete gadget set
+```
+$ ./jitrop -p <pid> -a <address>
+```
+4. To get other gadget sets, add an operation flag the end of the previous command as follows for example. 
+```
+$ ./jitrop -p <pid> -a <address> -o 7   [7 for MOV TC gadget set]
+```
+
+
+### Gadget Lookup Time
+To get gadget lookup times, we can change the operation value as follows:
+
+```
+-o 1: Operation 1 outputs the time to collect all the gadgets from the Turing-complete gadget set.
+-o 2: Operation 2 outputs the time to collect all the gadgets from the priority gadget set.
+-o 3: Operation 3 outputs the time to collect all the gadgets from the MOV TC gadget set.
+-o 5: Operation 5 outptus the time to collect all the gadgets from a payload gadget set.
+```
+
+
+For example, the following command gives times to get all gadgets from Turing-complete gadget set.
+
+```
+$ ./jitrop -p <pid> -a <address> -o 1
+```
+
+
+# Detailed information and instructions
 The project collects the gadgets and records the time to obtain gadgets from a process by utilizing an attack technique called Just-In-Time Return-Oriented Programming ([JIT-ROP](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6547134)). We utilize the JIT-ROP technique to evaluate different fine-grained address space layout randomization (ASLR) schemes and measure the upper bound of effective re-randomization intervals. [Our evaluation and measurements](https://dl.acm.org/doi/pdf/10.1145/3372297.3417248) have been published in ACM CCS 2020. We implement a native version of the JIT-ROP technique. Please cite our paper if you utilize the source code of this repository.
 
 ```
@@ -40,7 +104,7 @@ Usage: sudo ./jitrop -p <pid> -a <address> -o <operation> [-c <number of startin
 ```
 To execute the ```jitrop``` program, we need two required parameters: i) the pid of a running process, and ii) a leaked address from the process. Inside the ```nginx``` directory of this repository, we have modified the ```nginx``` program to leak the address of the ```ngx_getpid()``` function. We have compiled and built the executable program of the modified ```nginx``` program for testing.
 
-To run the ```nginx``` server, just issue ```sudo ./nginx/sbin/nginx```. If the ```nginx``` program runs succesfully, it will output as follows.
+To run the ```nginx``` server, just issue ```$ ./nginx/nginx -c nginx.conf -g 'daemon on;' -p nginx```. If the ```nginx``` program runs succesfully, it will output as follows.
 ```
 The address of the function ngx_getpid() is = 0x7f06e17d1240
 ```
