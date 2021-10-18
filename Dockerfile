@@ -30,4 +30,6 @@ RUN cd /tmp && \
 ARG ExploitDir=/opt/metasploit-framework/embedded/framework/modules/exploits/linux/ftp
 COPY dop/exploit/proftp_sreplace_dop.rb $ExploitDir
 COPY dop/exploit/proftp_sreplace_dop_step.rb $ExploitDir
+RUN mkdir -p /home/secdev/tutorial-secdev-2021/dop/exploit
+COPY dop/exploit/byte_map.rb /home/secdev/tutorial-secdev-2021/dop/exploit/byte_map.rb
 
