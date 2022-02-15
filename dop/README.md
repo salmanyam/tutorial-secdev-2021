@@ -118,7 +118,6 @@ Next, enter the docker container and start Metasploit `msfconsole`:
 
 ```sh
 > cd tutorial_root
-> ./shell_dop.sh
 > msfconsole
 ```
 
